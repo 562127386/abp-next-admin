@@ -99,10 +99,6 @@
     <Project Path="framework/auditing/LINGYUN.Abp.AuditLogging.IP.Location/LINGYUN.Abp.AuditLogging.IP.Location.csproj" />
     <Project Path="framework/auditing/LINGYUN.Abp.AuditLogging/LINGYUN.Abp.AuditLogging.csproj" />
   </Folder>
-  <Folder Name="/framework/authentication/">
-    <Project Path="framework/authentication/LINGYUN.Abp.Authentication.QQ/LINGYUN.Abp.Authentication.QQ.csproj" />
-    <Project Path="framework/authentication/LINGYUN.Abp.Authentication.WeChat/LINGYUN.Abp.Authentication.WeChat.csproj" />
-  </Folder>
   <Folder Name="/framework/authorization/">
     <Project Path="framework/authorization/LINGYUN.Abp.Authorization.OrganizationUnits/LINGYUN.Abp.Authorization.OrganizationUnits.csproj" />
   </Folder>
@@ -312,6 +308,7 @@
     <Project Path="modules/blob-management/LINGYUN.Abp.BlobManagement.FileSystem/LINGYUN.Abp.BlobManagement.FileSystem.csproj" />
     <Project Path="modules/blob-management/LINGYUN.Abp.BlobManagement.HttpApi.Client/LINGYUN.Abp.BlobManagement.HttpApi.Client.csproj" />
     <Project Path="modules/blob-management/LINGYUN.Abp.BlobManagement.HttpApi/LINGYUN.Abp.BlobManagement.HttpApi.csproj" />
+    <Project Path="modules/blob-management/LINGYUN.Abp.BlobManagement.MimeCheck/LINGYUN.Abp.BlobManagement.MimeCheck.csproj" />
     <Project Path="modules/blob-management/LINGYUN.Abp.BlobManagement.Minio/LINGYUN.Abp.BlobManagement.Minio.csproj" />
     <Project Path="modules/blob-management/LINGYUN.Abp.BlobManagement.SettingManagement/LINGYUN.Abp.BlobManagement.SettingManagement.csproj" />
     <Project Path="modules/blob-management/LINGYUN.Abp.BlobManagement.Tencent/LINGYUN.Abp.BlobManagement.Tencent.csproj" />
@@ -527,6 +524,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/LINGYUN.Abp.Aliyun.Tests/LINGYUN.Abp.Aliyun.Tests.csproj" />
+    <Project Path="tests/LINGYUN.Abp.AuditLogging.Elasticsearch.Tests/LINGYUN.Abp.AuditLogging.Elasticsearch.Tests.csproj" />
     <Project Path="tests/LINGYUN.Abp.BlobStoring.Aliyun.Tests/LINGYUN.Abp.BlobStoring.Aliyun.Tests.csproj" />
     <Project Path="tests/LINGYUN.Abp.BlobStoring.Nexus.Tests/LINGYUN.Abp.BlobStoring.Nexus.Tests.csproj" />
     <Project Path="tests/LINGYUN.Abp.DataProtection.Tests/LINGYUN.Abp.DataProtection.Tests.csproj" />

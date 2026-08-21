@@ -49,7 +49,7 @@ public interface IIdentityUserRepository : Volo.Abp.Identity.IIdentityUserReposi
     /// <param name="includeDetails"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<IdentityUser> FindByPhoneNumberAsync(
+    Task<IdentityUser?> FindByPhoneNumberAsync(
         string phoneNumber,
         bool isConfirmed = true,
         bool includeDetails = false,
@@ -78,7 +78,7 @@ public interface IIdentityUserRepository : Volo.Abp.Identity.IIdentityUserReposi
     /// <returns></returns>
     Task<List<OrganizationUnit>> GetOrganizationUnitsAsync(
         Guid userId, 
-        string filter = null,
+        string? filter = null,
         bool includeDetails = false, 
         int skipCount = 1, 
         int maxResultCount = 10, 
@@ -93,13 +93,13 @@ public interface IIdentityUserRepository : Volo.Abp.Identity.IIdentityUserReposi
     /// <returns></returns>
     Task<long> GetUsersInOrganizationUnitCountAsync(
         Guid organizationUnitId,
-        string filter = null,
+        string? filter = null,
         CancellationToken cancellationToken = default
     );
 
     Task<List<IdentityUser>> GetUsersInOrganizationUnitAsync(
         Guid organizationUnitId,
-        string filter = null,
+        string? filter = null,
         int skipCount = 1,
         int maxResultCount = 10,
         CancellationToken cancellationToken = default
@@ -107,13 +107,13 @@ public interface IIdentityUserRepository : Volo.Abp.Identity.IIdentityUserReposi
 
     Task<long> GetUsersInOrganizationsListCountAsync(
         List<Guid> organizationUnitIds,
-        string filter = null,
+        string? filter = null,
         CancellationToken cancellationToken = default
     );
 
     Task<List<IdentityUser>> GetUsersInOrganizationsListAsync(
         List<Guid> organizationUnitIds,
-        string filter = null,
+        string? filter = null,
         int skipCount = 1,
         int maxResultCount = 10,
         CancellationToken cancellationToken = default
@@ -121,13 +121,13 @@ public interface IIdentityUserRepository : Volo.Abp.Identity.IIdentityUserReposi
 
     Task<long> GetUsersInOrganizationUnitWithChildrenCountAsync(
         string code,
-        string filter = null,
+        string? filter = null,
         CancellationToken cancellationToken = default
     );
 
     Task<List<IdentityUser>> GetUsersInOrganizationUnitWithChildrenAsync(
         string code,
-        string filter = null,
+        string? filter = null,
         int skipCount = 1,
         int maxResultCount = 10,
         CancellationToken cancellationToken = default

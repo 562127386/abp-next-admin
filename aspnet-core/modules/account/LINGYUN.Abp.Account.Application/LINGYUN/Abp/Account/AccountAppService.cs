@@ -56,7 +56,8 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
 
         var options = await MiniProgramOptionsFactory.CreateAsync();
 
-        var wehchatOpenId = await WeChatOpenIdFinder.FindAsync(input.Code, options.AppId, options.AppSecret);
+        var wehchatOpenId = await WeChatOpenIdFinder.FindAsync(input.Code, options.AppId, options.AppSecret)
+            ?? throw new UserFriendlyException(L["InvalidWeChatCode"]);
 
         var user = await UserManager.FindByLoginAsync(AbpWeChatMiniProgramConsts.ProviderName, wehchatOpenId.OpenId);
         if (user != null)
@@ -69,7 +70,7 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
         {
             userName = "wxid-" + wehchatOpenId.OpenId.ToMd5().ToLower();
         }
-        
+
         var userEmail = input.EmailAddress;//如果邮件地址不验证,随意写入一个
         if (userEmail.IsNullOrWhiteSpace())
         {
@@ -77,7 +78,11 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
         }
 
         user = new IdentityUser(GuidGenerator.Create(), userName, userEmail, CurrentTenant.Id);
-        (await UserManager.CreateAsync(user, input.Password)).CheckErrors();
+        (await UserManager.CreateAsync(user)).CheckErrors();
+        if (!input.Password.IsNullOrWhiteSpace())
+        {
+            (await UserManager.AddPasswordAsync(user, input.Password)).CheckErrors();
+        }
 
         (await UserManager.AddDefaultRolesAsync(user)).CheckErrors();
 
@@ -92,8 +97,6 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
                 Identity = "Account",
                 UserName = user.UserName
             });
-
-        await CurrentUnitOfWork.SaveChangesAsync();
     }
 
     public async virtual Task SendPhoneRegisterCodeAsync(SendPhoneRegisterCodeDto input)
@@ -102,7 +105,7 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
         await CheckNewUserPhoneNumberNotBeUsedAsync(input.PhoneNumber);
 
         var securityTokenCacheKey = SecurityTokenCacheItem.CalculateSmsCacheKey(
-            input.PhoneNumber, 
+            input.PhoneNumber,
             UserTwoFactorTokenProviderConsts.PhoneNumberRegisterPurpose);
         var securityTokenCacheItem = await SecurityTokenCache.GetAsync(securityTokenCacheKey);
         var interval = await SettingProvider.GetAsync(IdentitySettingNames.User.SmsRepetInterval, 1);
@@ -124,14 +127,14 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
         await UserStore.SetSecurityStampAsync(tempNewUser, Guid.NewGuid().ToString("n"));
 
         var code = await UserManager.GenerateUserTokenAsync(
-            tempNewUser, 
-            UserTwoFactorTokenProviderConsts.PhoneNumberRegisterTokenProvider, 
+            tempNewUser,
+            UserTwoFactorTokenProviderConsts.PhoneNumberRegisterTokenProvider,
             UserTwoFactorTokenProviderConsts.PhoneNumberRegisterPurpose);
 
         securityTokenCacheItem = new SecurityTokenCacheItem(code, tempNewUser.Id, await UserManager.GetSecurityStampAsync(tempNewUser));
 
         await SecurityCodeSender.SendAsync(
-            input.PhoneNumber, securityTokenCacheItem.Token, template);
+            input.PhoneNumber, securityTokenCacheItem.Token, template!);
 
         await SecurityTokenCache
             .SetAsync(securityTokenCacheKey, securityTokenCacheItem,
@@ -145,6 +148,7 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
     {
         await CheckSelfRegistrationAsync();
         await IdentityOptions.SetAsync();
+        ThowIfInvalidEmailAddress(input.EmailAddress);
         await CheckNewUserPhoneNumberNotBeUsedAsync(input.PhoneNumber);
 
         var securityTokenCacheKey = SecurityTokenCacheItem.CalculateSmsCacheKey(
@@ -169,8 +173,8 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
             await UserStore.SetSecurityStampAsync(tempNewUser, securityTokenCacheItem.SecurityToken);
 
             if (await UserManager.VerifyUserTokenAsync(
-                tempNewUser, 
-                UserTwoFactorTokenProviderConsts.PhoneNumberRegisterTokenProvider, 
+                tempNewUser,
+                UserTwoFactorTokenProviderConsts.PhoneNumberRegisterTokenProvider,
                 UserTwoFactorTokenProviderConsts.PhoneNumberRegisterPurpose,
                 input.Code))
             {
@@ -180,11 +184,12 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
                 {
                     Name = input.Name ?? input.PhoneNumber
                 };
+                (await UserManager.CreateAsync(user)).CheckErrors();
 
                 (await UserManager.SetPhoneNumberAsync(user, input.PhoneNumber)).CheckErrors();
                 if (!input.Password.IsNullOrWhiteSpace())
                 {
-                    (await UserManager.CreateAsync(user, input.Password)).CheckErrors();
+                    (await UserManager.AddPasswordAsync(user, input.Password)).CheckErrors();
                 }
 
                 await UserStore.SetPhoneNumberConfirmedAsync(user, true);
@@ -201,8 +206,6 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
                         Identity = "Account",
                         UserName = user.UserName
                     });
-
-                await CurrentUnitOfWork.SaveChangesAsync();
 
                 return;
             }
@@ -235,11 +238,11 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
         var template = await SettingProvider.GetOrNullAsync(IdentitySettingNames.User.SmsResetPassword);
         // 生成二次认证码
         var code = await UserManager.GenerateUserTokenAsync(
-            user, 
+            user,
             TokenOptions.DefaultPhoneProvider,
             UserTwoFactorTokenProviderConsts.PhoneResetPasswordPurpose);
         // 发送短信验证码
-        await SecurityCodeSender.SendAsync(input.PhoneNumber, code, template);
+        await SecurityCodeSender.SendAsync(input.PhoneNumber, code, template!);
         // 缓存这个手机号的记录,防重复
         securityTokenCacheItem = new SecurityTokenCacheItem(code, user.Id, user.SecurityStamp);
         await SecurityTokenCache
@@ -270,9 +273,9 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
         }
         // 验证二次认证码
         if (!await UserManager.VerifyUserTokenAsync(
-            user, 
+            user,
             TokenOptions.DefaultPhoneProvider,
-            UserTwoFactorTokenProviderConsts.PhoneResetPasswordPurpose, 
+            UserTwoFactorTokenProviderConsts.PhoneResetPasswordPurpose,
             input.Code))
         {
             // 验证码无效
@@ -282,6 +285,7 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
         var resetPwdToken = await UserManager.GeneratePasswordResetTokenAsync(user);
         // 重置密码
         (await UserManager.ResetPasswordAsync(user, resetPwdToken, input.NewPassword)).CheckErrors();
+
         // 移除缓存项
         await SecurityTokenCache.RemoveAsync(securityTokenCacheKey);
 
@@ -293,8 +297,6 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
                 Identity = "Account",
                 UserName = user.UserName
             });
-
-        await CurrentUnitOfWork.SaveChangesAsync();
     }
 
     public async virtual Task SendPhoneSigninCodeAsync(SendPhoneSigninCodeDto input)
@@ -313,7 +315,7 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
         var template = await SettingProvider.GetOrNullAsync(IdentitySettingNames.User.SmsUserSignin);
 
         // 发送登录验证码短信
-        await SecurityCodeSender.SendAsync(input.PhoneNumber, code, template);
+        await SecurityCodeSender.SendAsync(input.PhoneNumber, code, template!);
         // 缓存登录验证码状态,防止同一手机号重复发送
         securityTokenCacheItem = new SecurityTokenCacheItem(code, user.Id, user.SecurityStamp);
         await SecurityTokenCache
@@ -384,14 +386,14 @@ public class AccountAppService : AccountApplicationServiceBase, IAccountAppServi
         }
     }
 
-    protected virtual Task<string> FindClientIdAsync()
+    protected virtual Task<string?> FindClientIdAsync()
     {
         var client = LazyServiceProvider.LazyGetRequiredService<ICurrentClient>();
 
         return Task.FromResult(client.Id);
     }
 
-    private void ThowIfInvalidEmailAddress(string inputEmail)
+    private void ThowIfInvalidEmailAddress(string? inputEmail)
     {
         if (!inputEmail.IsNullOrWhiteSpace() &&
             !ValidationHelper.IsValidEmailAddress(inputEmail))

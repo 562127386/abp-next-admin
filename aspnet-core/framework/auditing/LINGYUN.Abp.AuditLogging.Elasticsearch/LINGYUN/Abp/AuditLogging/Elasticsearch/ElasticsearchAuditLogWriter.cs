@@ -1,5 +1,6 @@
 ﻿using Elastic.Clients.Elasticsearch;
 using Elastic.Clients.Elasticsearch.Core.Bulk;
+using Elastic.Transport.Products.Elasticsearch;
 using LINGYUN.Abp.Elasticsearch;
 using Microsoft.Extensions.Logging;
 using System;
@@ -33,7 +34,7 @@ public class ElasticsearchAuditLogWriter : IAuditLogWriter, ITransientDependency
         _logger = logger;
     }
 
-    public async virtual Task WriteAsync(AuditLogInfo auditLogInfo, CancellationToken cancellationToken = default)
+    public async virtual Task<string> WriteAsync(AuditLogInfo auditLogInfo, CancellationToken cancellationToken = default)
     {
         var client = _clientFactory.Create();
         var auditLog = await _auditLogConverter.ConvertAsync(auditLogInfo);
@@ -43,10 +44,10 @@ public class ElasticsearchAuditLogWriter : IAuditLogWriter, ITransientDependency
                       .Id(auditLog.Id),
             cancellationToken);
 
-        if (!response.IsValidResponse)
+        if (!response.IsSuccess())
         {
             _logger.LogWarning("Could not save the audit log object: " + Environment.NewLine + auditLog.ToString());
-            if (response.TryGetOriginalException(out var ex))
+            if (response.TryGetOriginalException(out var ex) && ex != null)
             {
                 _logger.LogWarning(ex, ex.Message);
             }
@@ -54,7 +55,10 @@ public class ElasticsearchAuditLogWriter : IAuditLogWriter, ITransientDependency
             {
                 _logger.LogWarning(response.ElasticsearchServerError.ToString());
             }
+            return "";
         }
+
+        return auditLog.Id.ToString();
     }
 
     public async virtual Task BulkWriteAsync(IEnumerable<AuditLogInfo> auditLogInfos, CancellationToken cancellationToken = default)
