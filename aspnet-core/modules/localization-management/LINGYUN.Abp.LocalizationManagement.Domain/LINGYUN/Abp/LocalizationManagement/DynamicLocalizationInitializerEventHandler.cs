@@ -430,6 +430,7 @@ public class DynamicLocalizationInitializerEventHandler :
         foreach (var cacheItem in cacheItems)
         {
             var setTexts = new Dictionary<string, string>();
+            // 这个地方可以优化 查询 cacheItems会有几百个 这样会导致循环查询数据库几百次 可以一次性查询所有的文本 然后再进行分组！！！todo
             var allTexts = await TextRepository.GetListAsync(cacheItem.ResourceName, cacheItem.CultureName);
             foreach (var text in allTexts)
             {

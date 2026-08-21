@@ -15,7 +15,6 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Elsa.Core" />
 		<PackageReference Include="Volo.Abp.BlobStoring" />
 	</ItemGroup>
 

@@ -65,7 +65,8 @@ public class TenantAppService : AbpSaasAppServiceBase, ITenantAppService
             input.Sorting,
             input.MaxResultCount,
             input.SkipCount,
-            input.Filter
+            input.Filter,
+            includeDetails: true   //因为租户列表需要显示租户的版本号, 所以需要包含详细信息
         );
 
         return new PagedResultDto<TenantDto>(

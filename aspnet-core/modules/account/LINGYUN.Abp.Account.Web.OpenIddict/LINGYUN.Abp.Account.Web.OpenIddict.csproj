@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<Import Project="..\..\..\..\configureawait.props" />
 	<Import Project="..\..\..\..\common.props" />
@@ -25,6 +25,7 @@
 		<Content Remove="Pages\**\*.js" />
 		<Content Remove="Views\**\*.js" />
 		<Content Remove="wwwroot\**\*.css" />
+		<Content Remove="Pages\_ViewImports.cshtml" />
 	</ItemGroup>
 
 	<ItemGroup>

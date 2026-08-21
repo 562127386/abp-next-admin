@@ -192,6 +192,35 @@ public class EfCoreIdentityUserRepository : Volo.Abp.Identity.EntityFrameworkCor
             .ToListAsync(GetCancellationToken(cancellationToken));
     }
 
+
+    public async virtual Task<List<IdentityUser>> GetUsersInRoles(string[] scopeValues)
+    {
+        var dbContext = await GetDbContextAsync();
+        var roles = await dbContext.Roles.ToListAsync();
+        var roleIds = roles
+            .Where(role => scopeValues.Any(value =>
+                string.Equals(role.Id.ToString(), value, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(role.Name, value, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(role.NormalizedName, value, StringComparison.OrdinalIgnoreCase)))
+            .Select(role => role.Id)
+            .ToHashSet();
+        if (roleIds.Count == 0)
+        {
+            return [];
+        }
+
+      
+        var userEntities = await dbContext.Users
+     .Include(u => u.Roles) // 加载用户-角色多对多
+     .Where(u => u.Roles.Any(ur => roleIds.Contains(ur.RoleId)))
+     .OrderBy(u => u.Name ?? u.UserName)
+     .ToListAsync();
+        return userEntities;
+    }
+
+
+
+
     public async virtual Task<long> GetUsersInOrganizationUnitWithChildrenCountAsync(
         string code,
         string filter = null,

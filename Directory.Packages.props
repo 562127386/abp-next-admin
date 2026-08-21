@@ -2,7 +2,7 @@
   <PropertyGroup>
     <DotNetCoreCAPPackageVersion>10.0.0</DotNetCoreCAPPackageVersion>
     <ElsaPackageVersion>2.16.1</ElsaPackageVersion>
-    <ElsaNextPackageVersion>3.6.0</ElsaNextPackageVersion>
+    <ElsaNextPackageVersion>3.7.1</ElsaNextPackageVersion>
     <VoloAbpPackageVersion>10.4.0</VoloAbpPackageVersion>
     <LINGYUNAbpPackageVersion>10.4.0</LINGYUNAbpPackageVersion>
     <MicrosoftExtensionsPackageVersion>10.0.7</MicrosoftExtensionsPackageVersion>
@@ -204,19 +204,19 @@
   </ItemGroup>
   <!-- Elsa -->
   <ItemGroup>
-    <PackageVersion Include="Elsa" Version="$(ElsaPackageVersion)" />
+    <PackageVersion Include="Elsa" Version="3.7.1" />
     <PackageVersion Include="Elsa.Activities.Email" Version="$(ElsaPackageVersion)" />
     <PackageVersion Include="Elsa.Activities.Http" Version="$(ElsaPackageVersion)" />
     <PackageVersion Include="Elsa.Activities.UserTask" Version="$(ElsaPackageVersion)" />
     <PackageVersion Include="Elsa.Activities.Temporal.Quartz" Version="$(ElsaPackageVersion)" />
-    <PackageVersion Include="Elsa.Core" Version="$(ElsaPackageVersion)" />
-    <PackageVersion Include="Elsa.Designer.Components.Web" Version="$(ElsaPackageVersion)" />
+    <PackageVersion Include="Elsa.Core" Version="2.16.1" />
+    <PackageVersion Include="Elsa.Designer.Components.Web" Version="2.16.1" />
     <PackageVersion Include="Elsa.Rebus.RabbitMq" Version="$(ElsaPackageVersion)" />
-    <PackageVersion Include="Elsa.Server.Api" Version="$(ElsaPackageVersion)" />
+    <PackageVersion Include="Elsa.Server.Api" Version="2.16.1" />
     <PackageVersion Include="Elsa.Server.Authentication" Version="$(ElsaPackageVersion)" />
     <PackageVersion Include="Elsa.Webhooks.Api" Version="$(ElsaPackageVersion)" />
-    <PackageVersion Include="Elsa.Webhooks.Persistence.EntityFramework.Core" Version="$(ElsaPackageVersion)" />
-    <PackageVersion Include="Elsa.WorkflowSettings.Persistence.EntityFramework.Core" Version="$(ElsaPackageVersion)" />
+    <PackageVersion Include="Elsa.Webhooks.Persistence.EntityFramework.Core" Version="2.16.1" />
+    <PackageVersion Include="Elsa.WorkflowSettings.Persistence.EntityFramework.Core" Version="2.16.1" />
     <PackageVersion Include="Elsa.Webhooks.Persistence.EntityFramework.MySql" Version="$(ElsaPackageVersion)" />
     <PackageVersion Include="Elsa.WorkflowSettings.Persistence.EntityFramework.MySql" Version="$(ElsaPackageVersion)" />
     <PackageVersion Include="Elsa.Webhooks.Persistence.EntityFramework.PostgreSql" Version="$(ElsaPackageVersion)" />

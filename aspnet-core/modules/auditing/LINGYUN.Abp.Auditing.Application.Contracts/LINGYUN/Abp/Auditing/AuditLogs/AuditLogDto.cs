@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Volo.Abp.Application.Dtos;
 
@@ -47,6 +47,11 @@ public class AuditLogDto : ExtensibleEntityDto<Guid>
     public string Comments { get; set; }
 
     public int? HttpStatusCode { get; set; }
+
+    public string RequestBody { get; set; }
+
+    public string ResponseBody { get; set; }
+
     public List<EntityChangeDto> EntityChanges { get; set; }
     public List<AuditLogActionDto> Actions { get; set; }
 

@@ -1,4 +1,4 @@
-﻿using LINGYUN.Abp.LocalizationManagement.External;
+using LINGYUN.Abp.LocalizationManagement.External;
 using System.Threading.Tasks;
 using Volo.Abp.Caching;
 using Volo.Abp.DependencyInjection;
@@ -32,7 +32,7 @@ public class DynamicLocalizationChangedEventHandler :
     {
         var resourcesCacheItem = await ResourcesCache.GetAsync(LocalizationResourcesCacheItem.CacheKey);
         var languagesCacheItem = await LanguageCache.GetAsync(LocalizationLanguageCacheItem.CacheKey);
-        if (languagesCacheItem == null && resourcesCacheItem == null)
+        if (languagesCacheItem == null || resourcesCacheItem == null)
         {
             return;
         }

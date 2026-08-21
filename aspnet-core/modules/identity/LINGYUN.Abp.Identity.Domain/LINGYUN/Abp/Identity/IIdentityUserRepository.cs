@@ -9,6 +9,12 @@ namespace LINGYUN.Abp.Identity;
 public interface IIdentityUserRepository : Volo.Abp.Identity.IIdentityUserRepository
 {
     /// <summary>
+    /// 根据角色id 名称 等获取用户列表
+    /// </summary>
+    /// <param name="scopeValues"></param>
+    /// <returns></returns>
+    Task<List<IdentityUser>> GetUsersInRoles(string[] scopeValues);
+    /// <summary>
     /// 手机号是否已被使用
     /// </summary>
     /// <param name="phoneNumber"></param>

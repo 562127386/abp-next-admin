@@ -18,5 +18,5 @@ public static class BlobManagementSettingNames
 
     public const long DefaultFileLimitLength = 5L;
     public const double DefaultGenerateDownloadUrlExpirySeconds = 600d;
-    public const string DefaultAllowFileExtensions = "dll,zip,rar,txt,log,xml,config,json,jpeg,jpg,png,bmp,ico,xlsx,xltx,xls,xlt,docs,dots,doc,dot,pdf,pptx,potx,ppt,pot,chm";
+    public const string DefaultAllowFileExtensions = "dll,zip,rar,txt,log,xml,config,json,jpeg,jpg,png,bmp,ico,xlsx,xltx,xls,xlt,docs,dots,doc,docx,dot,pdf,pptx,potx,ppt,pot,chm";
 }
