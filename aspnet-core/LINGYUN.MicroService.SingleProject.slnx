@@ -48,6 +48,10 @@
     <Project Path="framework/data-protection/LINGYUN.Abp.DataProtection.EntityFrameworkCore/LINGYUN.Abp.DataProtection.EntityFrameworkCore.csproj" />
     <Project Path="framework/data-protection/LINGYUN.Abp.DataProtection/LINGYUN.Abp.DataProtection.csproj" />
   </Folder>
+  <Folder Name="/framework/dynamic-definition/">
+    <Project Path="framework/dynamic-definition/LINGYUN.Abp.Dynamic.Definitions.Core/LINGYUN.Abp.Dynamic.Definitions.Core.csproj" />
+    <Project Path="framework/dynamic-definition/LINGYUN.Abp.Dynamic.Definitions/LINGYUN.Abp.Dynamic.Definitions.csproj" />
+  </Folder>
   <Folder Name="/framework/dynamic-queryable/">
     <Project Path="framework/dynamic-queryable/LINGYUN.Abp.Dynamic.Queryable.Application.Contracts/LINGYUN.Abp.Dynamic.Queryable.Application.Contracts.csproj" />
     <Project Path="framework/dynamic-queryable/LINGYUN.Abp.Dynamic.Queryable.Application/LINGYUN.Abp.Dynamic.Queryable.Application.csproj" />
@@ -342,6 +346,7 @@
     <Project Path="modules/platform/LINGYUN.Platform.EntityFrameworkCore/LINGYUN.Platform.EntityFrameworkCore.csproj" />
     <Project Path="modules/platform/LINGYUN.Platform.HttpApi.Client/LINGYUN.Platform.HttpApi.Client.csproj" />
     <Project Path="modules/platform/LINGYUN.Platform.HttpApi/LINGYUN.Platform.HttpApi.csproj" />
+    <Project Path="modules/platform/LINGYUN.Platform.Jobs/LINGYUN.Platform.Jobs.csproj" />
   </Folder>
   <Folder Name="/modules/saas/">
     <Project Path="modules/saas/LINGYUN.Abp.Saas.Application.Contracts/LINGYUN.Abp.Saas.Application.Contracts.csproj" />

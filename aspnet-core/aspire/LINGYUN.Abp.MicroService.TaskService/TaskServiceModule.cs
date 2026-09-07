@@ -9,6 +9,7 @@ using LINGYUN.Abp.BackgroundTasks.Quartz;
 using LINGYUN.Abp.BlobStoring.BlobManagement;
 using LINGYUN.Abp.Claims.Mapping;
 using LINGYUN.Abp.Data.DbMigrator;
+using LINGYUN.Abp.Dynamic.Definitions;
 using LINGYUN.Abp.Elasticsearch.Jobs;
 using LINGYUN.Abp.Emailing.Platform;
 using LINGYUN.Abp.EventBus.CAP;
@@ -23,6 +24,8 @@ using LINGYUN.Abp.Serilog.Enrichers.UniqueId;
 using LINGYUN.Abp.Sms.Platform;
 using LINGYUN.Abp.TaskManagement;
 using LINGYUN.Abp.TaskManagement.EntityFrameworkCore;
+using LINGYUN.Platform.EntityFrameworkCore;
+using LINGYUN.Platform.Jobs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Volo.Abp;
@@ -55,6 +58,7 @@ namespace LINGYUN.Abp.MicroService.TaskService;
     typeof(AbpAspNetCoreMultiTenancyModule),
     typeof(AbpElasticsearchJobsModule),
     typeof(AbpIdentityJobsModule),
+    typeof(PlatformJobsModule),
     typeof(AbpBackgroundTasksJobsModule),
     typeof(AbpBackgroundTasksQuartzModule),
     typeof(AbpBackgroundTasksDistributedLockingModule),
@@ -68,6 +72,7 @@ namespace LINGYUN.Abp.MicroService.TaskService;
     typeof(AbpSettingManagementEntityFrameworkCoreModule),
     typeof(AbpSaasEntityFrameworkCoreModule),
     typeof(AbpLocalizationManagementEntityFrameworkCoreModule),
+    typeof(PlatformEntityFrameworkCoreModule),
     typeof(TaskServiceMigrationsEntityFrameworkCoreModule),
     typeof(AbpBlobStoringBlobManagementModule),
     typeof(AbpDataDbMigratorModule),
@@ -79,6 +84,7 @@ namespace LINGYUN.Abp.MicroService.TaskService;
     typeof(AbpLocalizationCultureMapModule),
     typeof(AbpAspNetCoreMvcWrapperModule),
     typeof(AbpAspNetCoreHttpOverridesModule),
+    typeof(AbpDynamicDefinitionsModule),
     typeof(AbpClaimsMappingModule),
     typeof(AbpCAPEventBusModule),
     typeof(AbpAutofacModule)

@@ -9,6 +9,7 @@
   <Folder Name="/.changes/">
     <File Path="../.changes/Migration 10.0.2 - 10.2.0.md" />
     <File Path="../.changes/Migration 10.2.0 - 10.4.0.md" />
+    <File Path="../.changes/Migration 10.4.0 - 10.6.0.md" />
   </Folder>
   <Folder Name="/.github/" />
   <Folder Name="/.github/workflows/">
@@ -144,6 +145,10 @@
     <Project Path="framework/data-protection/LINGYUN.Abp.DataProtection.Abstractions/LINGYUN.Abp.DataProtection.Abstractions.csproj" />
     <Project Path="framework/data-protection/LINGYUN.Abp.DataProtection.EntityFrameworkCore/LINGYUN.Abp.DataProtection.EntityFrameworkCore.csproj" />
     <Project Path="framework/data-protection/LINGYUN.Abp.DataProtection/LINGYUN.Abp.DataProtection.csproj" />
+  </Folder>
+  <Folder Name="/framework/dynamic-definition/">
+    <Project Path="framework/dynamic-definition/LINGYUN.Abp.Dynamic.Definitions/LINGYUN.Abp.Dynamic.Definitions.csproj" Id="6b19229f-012f-436a-b2b4-16ef943eb3fa" />
+    <Project Path="framework/dynamic-definition/LINGYUN.Abp.Dynamic.Definitions.Core/LINGYUN.Abp.Dynamic.Definitions.Core.csproj" Id="4cc5fdb2-2b0b-4937-a5b5-1c2afbc0c071" />
   </Folder>
   <Folder Name="/framework/dynamic-queryable/">
     <Project Path="framework/dynamic-queryable/LINGYUN.Abp.Dynamic.Queryable.Application.Contracts/LINGYUN.Abp.Dynamic.Queryable.Application.Contracts.csproj" />
@@ -421,6 +426,7 @@
     <Project Path="modules/platform/LINGYUN.Platform.EntityFrameworkCore/LINGYUN.Platform.EntityFrameworkCore.csproj" />
     <Project Path="modules/platform/LINGYUN.Platform.HttpApi.Client/LINGYUN.Platform.HttpApi.Client.csproj" />
     <Project Path="modules/platform/LINGYUN.Platform.HttpApi/LINGYUN.Platform.HttpApi.csproj" />
+    <Project Path="modules/platform/LINGYUN.Platform.Jobs/LINGYUN.Platform.Jobs.csproj" />
     <Project Path="modules/platform/LINGYUN.Platform.Settings.VueVbenAdmin/LINGYUN.Platform.Settings.VueVbenAdmin.csproj" />
     <Project Path="modules/platform/LINGYUN.Platform.Theme.VueVbenAdmin/LINGYUN.Platform.Theme.VueVbenAdmin.csproj" />
   </Folder>

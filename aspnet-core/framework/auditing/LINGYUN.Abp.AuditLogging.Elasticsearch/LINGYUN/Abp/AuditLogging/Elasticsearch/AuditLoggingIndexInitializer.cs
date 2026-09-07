@@ -1,12 +1,10 @@
 ﻿using Elastic.Clients.Elasticsearch;
 using Elastic.Clients.Elasticsearch.Mapping;
-using Elastic.Transport.Products.Elasticsearch;
 using LINGYUN.Abp.Elasticsearch;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using System;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp;
@@ -145,31 +143,15 @@ public class AuditLoggingIndexInitializer : IAuditLoggingIndexInitializer, ISing
             });
         }, cancellationToken);
 
-        if (!putTemplateResponse.IsValidResponse)
+        if (putTemplateResponse.TryGetErrorMessage(out var errorMessage))
         {
-            var errorBuilder = new StringBuilder();
-            if (putTemplateResponse.TryGetOriginalException(out var ex) && ex != null)
-            {
-                errorBuilder.AppendLine(ex.Message);
-                Logger.LogWarning(ex, "Failed to initialize index and audit log may not be retrieved.");
-                return;
-            }
-            else if (putTemplateResponse.TryGetElasticsearchServerError(out var error) && error != null)
-            {
-                errorBuilder.AppendLine(error.ToString());
-            }
-            else
-            {
-                errorBuilder.AppendLine(putTemplateResponse.DebugInformation);
-            }
-
             if (_elasticsearchOptions.ThrowIfIndexInitFailed)
             {
-                throw new AbpInitializationException($"Failed to initialize audit log index template, the error: {errorBuilder.ToString()}");
+                throw new AbpInitializationException($"Failed to initialize audit log index template, the error: {errorMessage}");
             }
 
             Logger.LogWarning("Failed to initialize index and audit log may not be retrieved.");
-            Logger.LogWarning("The error: {error}", errorBuilder.ToString());
+            Logger.LogWarning("The error: {error}", errorMessage);
         }
     }
 
@@ -217,31 +199,15 @@ public class AuditLoggingIndexInitializer : IAuditLoggingIndexInitializer, ISing
             });
         }, cancellationToken);
 
-        if (!putTemplateResponse.IsValidResponse)
+        if (putTemplateResponse.TryGetErrorMessage(out var errorMessage))
         {
-            var errorBuilder = new StringBuilder();
-            if (putTemplateResponse.TryGetOriginalException(out var ex) && ex != null)
-            {
-                errorBuilder.AppendLine(ex.Message);
-                Logger.LogWarning(ex, "Failed to initialize index and security log may not be retrieved.");
-                return;
-            }
-            else if (putTemplateResponse.TryGetElasticsearchServerError(out var error) && error != null)
-            {
-                errorBuilder.AppendLine(error.ToString());
-            }
-            else
-            {
-                errorBuilder.AppendLine(putTemplateResponse.DebugInformation);
-            }
-
             if (_elasticsearchOptions.ThrowIfIndexInitFailed)
             {
-                throw new AbpInitializationException($"Failed to initialize security log index template, the error: {errorBuilder.ToString()}");
+                throw new AbpInitializationException($"Failed to initialize security log index template, the error: {errorMessage}");
             }
 
             Logger.LogWarning("Failed to initialize index and security log may not be retrieved.");
-            Logger.LogWarning("The error: {error}", errorBuilder.ToString());
+            Logger.LogWarning("The error: {error}", errorMessage);
         }
     }
 }
