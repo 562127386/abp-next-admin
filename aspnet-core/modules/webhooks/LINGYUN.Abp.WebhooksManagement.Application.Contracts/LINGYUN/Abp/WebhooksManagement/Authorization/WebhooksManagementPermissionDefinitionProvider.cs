@@ -80,8 +80,9 @@ public class WebhooksManagementPermissionDefinitionProvider : PermissionDefiniti
         group.AddPermission(
             WebhooksManagementPermissions.Publish,
             L("Permission:Publish"),
-            MultiTenancySides.Host)
-            .WithProviders(ClientPermissionValueProvider.ProviderName);
+            MultiTenancySides.Host | MultiTenancySides.Tenant)
+           // .WithProviders(ClientPermissionValueProvider.ProviderName)
+            ;
 
         group.AddPermission(
             WebhooksManagementPermissions.ManageSettings,

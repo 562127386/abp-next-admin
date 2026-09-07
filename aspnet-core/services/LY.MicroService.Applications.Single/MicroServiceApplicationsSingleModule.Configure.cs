@@ -148,7 +148,7 @@ public partial class MicroServiceApplicationsSingleModule
         PreConfigure<ISignalRServerBuilder>(builder =>
         {
             var redisEnabled = configuration["SignalR:Redis:IsEnabled"];
-            if (redisEnabled.IsNullOrEmpty() || bool.Parse(redisEnabled))
+            if (!redisEnabled.IsNullOrEmpty() || bool.Parse(redisEnabled))
             {
                 builder.AddStackExchangeRedis(redis =>
                 {

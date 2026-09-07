@@ -1,6 +1,7 @@
 ﻿using LINGYUN.Abp.Identity;
 using Markdig;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Emailing;
 using Volo.Abp.Features;
+using Volo.Abp.Emailing.Smtp;
+using Microsoft.Extensions.Options;
 
 namespace LINGYUN.Abp.Notifications.Emailing;
 
@@ -63,6 +66,28 @@ public class EmailingNotificationPublishProvider : NotificationPublishProvider
         {
             notificationData.Message = Markdown.ToHtml(notificationData.Message);
         }
+
+//        // ======================发送前打印SMTP运行时配置（ABP10.x正确写法）======================
+//        var smtpConfig = ServiceProvider.LazyGetRequiredService<ISmtpEmailSenderConfiguration>();
+//        var host = await smtpConfig.GetHostAsync();
+//        var port = await smtpConfig.GetPortAsync();
+//        var userName = await smtpConfig.GetUserNameAsync();
+//        var enableSsl = await smtpConfig.GetEnableSslAsync();
+//        var defaultFrom = await smtpConfig.GetDefaultFromAddressAsync();
+
+//        Logger.LogInformation(@"[NotificationEmail Send‑Before] 运行时SMTP配置
+//Host:{Host}
+//Port:{Port}
+//EnableSsl:{EnableSsl}
+//UserName:{UserName}
+//DefaultFromAddress:{DefaultFromAddress}",
+//            host,
+//            port,
+//            enableSsl,
+//            userName,
+//            defaultFrom);
+//        // ====================================================================================
+
 
         await EmailSender.SendAsync(emailAddress, notificationData.Title, notificationData.Message);
 

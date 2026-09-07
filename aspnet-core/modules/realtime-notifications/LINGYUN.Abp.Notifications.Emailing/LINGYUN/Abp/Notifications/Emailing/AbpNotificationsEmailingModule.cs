@@ -1,12 +1,13 @@
 ﻿using LINGYUN.Abp.Identity;
 using Volo.Abp.Emailing;
+using Volo.Abp.MailKit;
 using Volo.Abp.Modularity;
 
 namespace LINGYUN.Abp.Notifications.Emailing;
 
 [DependsOn(
     typeof(AbpNotificationsModule),
-    typeof(AbpEmailingModule),
+    typeof(AbpMailKitModule),
     typeof(AbpIdentityDomainModule))]
 public class AbpNotificationsEmailingModule : AbpModule
 {

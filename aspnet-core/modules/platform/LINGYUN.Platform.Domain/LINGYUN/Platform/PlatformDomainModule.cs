@@ -10,6 +10,7 @@ using Volo.Abp.BlobStoring;
 using Volo.Abp.Domain.Entities.Events.Distributed;
 using Volo.Abp.Emailing;
 using Volo.Abp.EventBus;
+using Volo.Abp.MailKit;
 using Volo.Abp.Mapperly;
 using Volo.Abp.Modularity;
 using Volo.Abp.ObjectExtending.Modularity;
@@ -20,7 +21,7 @@ namespace LINGYUN.Platform;
 
 [DependsOn(
     typeof(AbpSmsModule),
-    typeof(AbpEmailingModule),
+    typeof(AbpMailKitModule),
     typeof(AbpEventBusModule),
     typeof(AbpEventBusModule),
     typeof(AbpMapperlyModule),

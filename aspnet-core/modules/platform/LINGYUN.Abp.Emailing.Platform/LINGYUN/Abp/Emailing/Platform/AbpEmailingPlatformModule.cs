@@ -5,7 +5,7 @@ using Volo.Abp.Modularity;
 namespace LINGYUN.Abp.Emailing.Platform;
 
 [DependsOn(
-    typeof(AbpEmailingModule),
+    typeof(AbpMailKitModule),
     typeof(PlatformHttpApiClientModule))]
 public class AbpEmailingPlatformModule : AbpModule
 {

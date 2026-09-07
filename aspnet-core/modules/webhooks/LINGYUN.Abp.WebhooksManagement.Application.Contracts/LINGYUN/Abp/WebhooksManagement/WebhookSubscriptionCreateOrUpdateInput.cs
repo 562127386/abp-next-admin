@@ -14,7 +14,7 @@ public class WebhookSubscriptionCreateInput : WebhookSubscriptionCreateOrUpdateI
 public class WebhookSubscriptionUpdateInput : WebhookSubscriptionCreateOrUpdateInput, IHasConcurrencyStamp
 {
     [StringLength(40)]
-    public string ConcurrencyStamp { get; set; } = default!;
+    public string? ConcurrencyStamp { get; set; } = default!;
 }
 
 public abstract class WebhookSubscriptionCreateOrUpdateInput

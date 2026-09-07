@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Application;
 using Volo.Abp.Emailing;
 using Volo.Abp.Localization;
+using Volo.Abp.MailKit;
 using Volo.Abp.Modularity;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.SettingManagement.Localization;
@@ -20,7 +21,7 @@ namespace LINGYUN.Abp.SettingManagement;
     typeof(VoloAbpSettingManagementApplicationContractsModule),
     typeof(AbpAccountApplicationContractsModule),
     typeof(AbpAccountOAuthModule),
-    typeof(AbpEmailingModule),
+    typeof(AbpMailKitModule),
     typeof(AbpTimingModule),
     typeof(AbpLocalizationModule),
     typeof(AbpDddApplicationModule)

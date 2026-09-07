@@ -25,4 +25,10 @@ public static class NotificationProviderNames
     /// 企业微信应用消息
     /// </summary>
     public const string WechatWork = "WeChat.Work";
+
+
+    /// <summary>
+    /// add by tca 20260828
+    /// </summary>
+    public const string Webhook = "Webhook";
 }

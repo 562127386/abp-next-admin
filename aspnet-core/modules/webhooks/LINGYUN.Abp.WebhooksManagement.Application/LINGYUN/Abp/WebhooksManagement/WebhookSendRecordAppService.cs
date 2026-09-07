@@ -58,7 +58,7 @@ public class WebhookSendRecordAppService : WebhooksManagementAppServiceBase, IWe
         var specification = new WebhookSendRecordGetListSpecification(input);
         var totalCount = await RecordRepository.GetCountAsync(specification);
         var sendRecords = await RecordRepository.GetListAsync(specification,
-            input.Sorting, input.MaxResultCount, input.SkipCount);
+            input.Sorting, input.MaxResultCount, input.SkipCount,includeDetails:true);
 
         return new PagedResultDto<WebhookSendRecordDto>(totalCount,
             sendRecords.Select(sendRecord => sendRecord.ToWebhookSendRecordDto()).ToList());

@@ -28,7 +28,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Volo.Abp.Emailing" />
+		<PackageReference Include="Volo.Abp.MailKit" />
 	</ItemGroup>
 
 	<ItemGroup>

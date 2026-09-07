@@ -309,7 +309,7 @@ namespace LY.MicroService.Applications.Single;
     // OpenApi模块 授权
     typeof(AbpOpenApiAuthorizationModule),
 
-    // 消息模块 实时框架
+    // 消息模块 实时框架openapi
     typeof(AbpIMSignalRModule),
 
     // 通知模块

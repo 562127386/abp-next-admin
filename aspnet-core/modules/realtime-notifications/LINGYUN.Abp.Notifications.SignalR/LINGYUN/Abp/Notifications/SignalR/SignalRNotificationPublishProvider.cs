@@ -1,4 +1,4 @@
-﻿using LINGYUN.Abp.Notifications.SignalR.Hubs;
+using LINGYUN.Abp.Notifications.SignalR.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -29,18 +29,20 @@ public class SignalRNotificationPublishProvider : NotificationPublishProvider
     protected async override Task PublishAsync(
         NotificationPublishContext context,
         CancellationToken cancellationToken = default)
-    {
-        if (!context.Users.Any())
         {
-            var groupName = context.Notification.TenantId?.ToString() ?? "Global";
+            Logger.LogDebug("[DEBUG] signalr publish start name={Name} userCount={UserCount} tenantId={TenantId} providers={Providers}", 
+                context.Notification.Name, context.Users.Count(), context.Notification.TenantId, context.Notification.Data.ExtraProperties.Count);
+            if (!context.Users.Any())
+            {
+                var groupName = context.Notification.TenantId?.ToString() ?? "Global";
             try
             {
                 var singalRGroup = _hubContext.Clients.Group(groupName);
                 // 租户通知群发
-                Logger.LogDebug($"Found a singalr group, begin senging notifications");
+                Logger.LogDebug("[DEBUG] signalr publish group sending name={Name} group={GroupName} method={Method}", context.Notification.Name, groupName, _options.MethodName);
                 await singalRGroup.SendAsync(_options.MethodName, context.Notification, cancellationToken);
 
-                Logger.LogDebug("The notification: {0} with provider: {1} has successfully published!", context.Notification.Name, Name);
+                Logger.LogDebug("[DEBUG] signalr publish group finished name={Name} provider={Provider}", context.Notification.Name, Name);
             }
             catch (Exception ex)
             {
@@ -55,8 +57,9 @@ public class SignalRNotificationPublishProvider : NotificationPublishProvider
             try
             {
                 var onlineClients = _hubContext.Clients.Users(context.Users.Select(x => x.UserId.ToString()));
-                Logger.LogDebug($"Found a singalr client, begin senging notifications");
+                Logger.LogDebug("[DEBUG] signalr publish users sending name={Name} users={Users} method={Method}", context.Notification.Name, string.Join(",", context.Users.Select(x => x.UserId)), _options.MethodName);
                 await onlineClients.SendAsync(_options.MethodName, context.Notification, cancellationToken);
+                Logger.LogDebug("[DEBUG] signalr publish users finished name={Name} provider={Provider}", context.Notification.Name, Name);
             }
             catch (Exception ex)
             {

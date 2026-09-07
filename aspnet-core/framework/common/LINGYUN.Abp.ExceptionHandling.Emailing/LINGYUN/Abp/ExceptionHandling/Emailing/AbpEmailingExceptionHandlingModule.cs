@@ -2,6 +2,7 @@
 using Volo.Abp.Emailing;
 using Volo.Abp.ExceptionHandling.Localization;
 using Volo.Abp.Localization;
+using Volo.Abp.MailKit;
 using Volo.Abp.Modularity;
 using Volo.Abp.VirtualFileSystem;
 
@@ -9,7 +10,7 @@ namespace LINGYUN.Abp.ExceptionHandling.Emailing;
 
 [DependsOn(
     typeof(AbpExceptionHandlingModule),
-    typeof(AbpEmailingModule))]
+    typeof(AbpMailKitModule))]
 public class AbpEmailingExceptionHandlingModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)

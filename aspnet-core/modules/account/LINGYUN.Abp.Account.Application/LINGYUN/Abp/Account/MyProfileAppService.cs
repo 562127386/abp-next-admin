@@ -215,7 +215,7 @@ public class MyProfileAppService : AccountApplicationServiceBase, IMyProfileAppS
         var user = await UserManager.GetByIdAsync(CurrentUser.GetId());
 
         // 字符编码错误
-        var confirmToken = HttpUtility.UrlDecode(input.ConfirmToken); ;
+        var confirmToken = HttpUtility.UrlDecode(input.ConfirmToken);
         (await UserManager.ConfirmEmailAsync(user, confirmToken)).CheckErrors();
 
         await IdentitySecurityLogManager.SaveAsync(new IdentitySecurityLogContext
