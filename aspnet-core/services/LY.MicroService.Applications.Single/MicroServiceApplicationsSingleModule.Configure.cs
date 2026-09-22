@@ -1,4 +1,3 @@
-using Swashbuckle.AspNetCore.SwaggerGen;
 using VoloAbpExceptionHandlingOptions = Volo.Abp.AspNetCore.ExceptionHandling.AbpExceptionHandlingOptions;
 
 namespace LY.MicroService.Applications.Single;
@@ -242,17 +241,6 @@ public partial class MicroServiceApplicationsSingleModule
         Configure<OpenIddictServerAspNetCoreOptions>(options =>
         {
             options.DisableTransportSecurityRequirement = true;
-        });
-
-        Configure<AbpOpenIddictAspNetCoreSessionOptions>(options =>
-        {
-            options.PersistentSessionGrantTypes.Add(SmsTokenExtensionGrantConsts.GrantType);
-            options.PersistentSessionGrantTypes.Add(PortalTokenExtensionGrantConsts.GrantType);
-            options.PersistentSessionGrantTypes.Add(LinkUserTokenExtensionGrantConsts.GrantType);
-            options.PersistentSessionGrantTypes.Add(WeChatTokenExtensionGrantConsts.OfficialGrantType);
-            options.PersistentSessionGrantTypes.Add(WeChatTokenExtensionGrantConsts.MiniProgramGrantType);
-            options.PersistentSessionGrantTypes.Add(AbpWeChatWorkGlobalConsts.GrantType);
-            options.PersistentSessionGrantTypes.Add(QrCodeLoginProviderConsts.GrantType);
         });
 
         Configure<OpenIddictServerOptions>(options =>
@@ -864,7 +852,7 @@ public partial class MicroServiceApplicationsSingleModule
             options.ExposeIntegrationServices = true;
         });
 
-        Configure<AbpIdentitySessionAspNetCoreOptions>(options =>
+        Configure<AbpAspNetCoreSessionOptions>(options =>
         {
             // abp 9.0版本可存储登录IP地域, 开启IP解析
             options.IsParseIpLocation = true;

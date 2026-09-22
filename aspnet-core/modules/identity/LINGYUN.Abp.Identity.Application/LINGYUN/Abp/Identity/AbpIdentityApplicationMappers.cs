@@ -28,10 +28,10 @@ public partial class IdentityRoleClaimToIdentityClaimDtoMapper : MapperBase<Iden
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
 [MapExtraProperties]
-public partial class IdentityUserToIdentityUserDtoMapper : MapperBase<IdentityUser, IdentityUserDto>
+public partial class IdentityUserToIdentityUserDtoMapper : MapperBase<IdentityUser, LINGYUN.Abp.Identity.Dto.IdentityUserDto>
 {
-    public override partial IdentityUserDto Map(IdentityUser source);
-    public override partial void Map(IdentityUser source, IdentityUserDto destination);
+    public override partial LINGYUN.Abp.Identity.Dto.IdentityUserDto Map(IdentityUser source);
+    public override partial void Map(IdentityUser source, LINGYUN.Abp.Identity.Dto.IdentityUserDto destination);
 }
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]

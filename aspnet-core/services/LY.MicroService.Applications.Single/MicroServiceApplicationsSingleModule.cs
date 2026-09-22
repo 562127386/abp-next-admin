@@ -1,12 +1,3 @@
-using LINGYUN.Abp.BlobManagement.MimeCheck;
-using LINGYUN.Abp.Dynamic.Definitions;
-using LINGYUN.Abp.Identity.AspNetCore;
-using LINGYUN.Abp.Identity.Jobs;
-using LINGYUN.Abp.Logging.Serilog.Elasticsearch;
-using LINGYUN.Abp.Notifications.Calendar;
-using LINGYUN.Platform.Jobs;
-using Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy;
-
 namespace LY.MicroService.Applications.Single;
 
 [DependsOn(
@@ -20,10 +11,6 @@ namespace LY.MicroService.Applications.Single;
     typeof(AbpAspNetCoreSerilogModule),
     // 身份认证模块 扩展UserToken验证
     typeof(AbpIdentityAspNetCoreModule),
-    // 身份认证模块 会话管理集成
-    typeof(AbpIdentityAspNetCoreSessionModule),
-    // 身份认证模块 会话中间件
-    typeof(AbpIdentitySessionAspNetCoreModule),
     // 身份认证模块 通知集成
     typeof(AbpIdentityNotificationsModule),
     // 身份认证模块 组织机构集成
@@ -111,8 +98,6 @@ namespace LY.MicroService.Applications.Single;
     // 通知模块 实体框架
     typeof(AbpNotificationsEntityFrameworkCoreModule),
 
-    // OpenIddict扩展模块 会话
-    typeof(AbpOpenIddictAspNetCoreSessionModule),
     // OpenIddict扩展模块 应用服务
     typeof(AbpOpenIddictApplicationModule),
     // OpenIddict扩展模块 控制器
@@ -405,11 +390,14 @@ namespace LY.MicroService.Applications.Single;
     typeof(AbpLoggingSerilogElasticsearchModule),
     typeof(AbpHttpClientWrapperModule),
     typeof(AbpAspNetCoreMvcWrapperModule),
+    typeof(AbpAspNetCoreSessionModule),
     typeof(AbpAspNetCoreMvcIdempotentWrapperModule),
     typeof(AbpAspNetCoreHttpOverridesModule),
     typeof(AbpHttpClientIdentityModelWebModule),
+    typeof(AbpAspNetCoreMultiTenancyModule),
     typeof(AbpAspNetCoreMvcUiMultiTenancyModule),
     typeof(AbpDynamicDefinitionsModule),
+    typeof(AbpClaimsMappingModule),
     typeof(AbpSwashbuckleModule),
     typeof(AbpMailKitModule),
     typeof(AbpAutofacModule),

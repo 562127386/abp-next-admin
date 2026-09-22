@@ -8,7 +8,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
+using Volo.Abp.Users;
 
 namespace LINGYUN.Abp.Identity;
 
@@ -16,15 +18,24 @@ namespace LINGYUN.Abp.Identity;
 public class IdentityUserAppService : IdentityAppServiceBase, IIdentityUserAppService
 {
     protected IdentityUserManager UserManager { get; }
+    protected IIdentityUserRepository UserRepository { get; }
+    protected IIdentityRoleRepository RoleRepository { get; }
+    protected IRepository<IdentityRole, Guid> RoleGenericRepository { get; }
     protected IOptions<IdentityOptions> IdentityOptions { get; }
     public IdentityUserAppService(
+        IRepository<IdentityRole, Guid> roleGenericRepository,
         IdentityUserManager userManager,
+        IIdentityUserRepository userRepository,
+        IIdentityRoleRepository roleRepository,
         IOptions<IdentityOptions> identityOptions) 
     {
+        RoleGenericRepository = roleGenericRepository;
         UserManager = userManager;
         IdentityOptions = identityOptions;
+        UserRepository = userRepository;
+        RoleRepository = roleRepository;
     }
-
+    
     #region OrganizationUnit
 
     public async virtual Task<ListResultDto<OrganizationUnitDto>> GetOrganizationUnitsAsync(Guid id)
@@ -176,5 +187,68 @@ public class IdentityUserAppService : IdentityAppServiceBase, IIdentityUserAppSe
         var user = await UserManager.GetByIdAsync(id);
 
         return user;
+    }
+
+    //[Authorize(Volo.Abp.Authorization.Permissions.IdentityPermissions.Users.Default)]
+    //public virtual async Task<PagedResultDto<LINGYUN.Abp.Identity.Dto.IdentityUserDto>> GetListAsync(GetIdentityUsersInput input)
+    //{
+    //    var count = await UserRepository.GetCountAsync(input.Filter);
+    //    var list = await UserRepository.GetListAsync(input.Sorting, input.MaxResultCount, input.SkipCount, input.Filter);
+
+    //    return new PagedResultDto<LINGYUN.Abp.Identity.Dto.IdentityUserDto>(
+    //        count,
+    //        ObjectMapper.Map<List<IdentityUser>, List<LINGYUN.Abp.Identity.Dto.IdentityUserDto>>(list)
+    //    );
+    //}
+    public virtual async Task<PagedResultDto<LINGYUN.Abp.Identity.Dto.IdentityUserDto>> GetUserListWithRoleNameAsync(GetIdentityUsersInput input)
+    {
+        // 1. 查询总条数（过滤条件不变）
+        var count = await UserRepository.GetCountAsync(input.Filter);
+
+        //// 2. 核心：使用 GetQueryable 手动 Include 用户角色，原生 GetListAsync 无法加载导航
+        //var query = await UserRepository.GetQueryableAsync();
+
+        //query = query
+        //    .WhereIf(!input.Filter.IsNullOrWhiteSpace(), x =>
+        //        x.UserName.Contains(input.Filter) ||
+        //        x.Email.Contains(input.Filter) ||
+        //        x.Name.Contains(input.Filter) ||
+        //        x.Surname.Contains(input.Filter))
+        //    // 加载用户角色多对多导航
+        //    .Include(u => u.Roles)
+        //        .ThenInclude(ur => ur.Role);
+
+        //// 分页、排序
+        //var userList = await query
+        //    .OrderBy(input.Sorting ?? nameof(IdentityUser.UserName))
+        //    .Skip(input.SkipCount)
+        //    .Take(input.MaxResultCount)
+        //    .ToListAsync();
+
+        var userList = await UserRepository.GetListAsync(input.Sorting, input.MaxResultCount, input.SkipCount, input.Filter, includeDetails: true);
+
+        // 取出所有需要用到的 RoleId
+        var roleIds = userList
+            .SelectMany(u => u.Roles.Select(ur => ur.RoleId))
+            .Distinct()
+            .ToList(); 
+
+        // 一次性批量查询角色，建立 RoleId -> RoleName 字典
+        var roleList = await RoleRepository.GetListByIdListAsync(roleIds);
+        var roleDict = roleList.ToDictionary(r => r.Id, r => r.Name);
+
+        var dtoList = ObjectMapper.Map<List<IdentityUser>, List<LINGYUN.Abp.Identity.Dto.IdentityUserDto>>(userList);
+
+        for (int i = 0; i < userList.Count; i++)
+        {
+            var user = userList[i];
+            // 根据RoleId从字典取出角色名称
+            dtoList[i].RoleNames = user.Roles
+                .Select(ur => roleDict.TryGetValue(ur.RoleId, out var name) ? name : null)
+                .Where(name => name != null)
+                .ToArray();
+        }
+
+        return new PagedResultDto<LINGYUN.Abp.Identity.Dto.IdentityUserDto>(count, dtoList);
     }
 }

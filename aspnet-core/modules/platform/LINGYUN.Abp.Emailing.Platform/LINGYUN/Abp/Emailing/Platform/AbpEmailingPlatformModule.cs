@@ -1,5 +1,6 @@
 ﻿using LINGYUN.Platform.HttpApi.Client;
 using Volo.Abp.Emailing;
+using Volo.Abp.MailKit;
 using Volo.Abp.Modularity;
 
 namespace LINGYUN.Abp.Emailing.Platform;

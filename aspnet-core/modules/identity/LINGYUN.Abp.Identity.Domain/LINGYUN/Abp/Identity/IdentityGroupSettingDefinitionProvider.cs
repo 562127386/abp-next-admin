@@ -27,6 +27,7 @@ public class IdentityGroupSettingDefinitionProvider : SettingDefinitionProvider
             ?.WithParent("Lockout", L("Settings:Identity.Lockout"), order: 3)
             ?.WithOrder(0)
             ?.WithValueType(ValueType.Boolean)
+            ?.Replace(x => x.IsVisibleToClients = false)
             ?.ReplaceProviders(
                 DefaultValueSettingValueProvider.ProviderName,
                 ConfigurationSettingValueProvider.ProviderName,
@@ -37,6 +38,7 @@ public class IdentityGroupSettingDefinitionProvider : SettingDefinitionProvider
             ?.WithParent("Lockout", L("Settings:Identity.Lockout"), order: 3)
             ?.WithOrder(1)
             ?.WithValueType(ValueType.Number)
+            ?.Replace(x => x.IsVisibleToClients = false)
             ?.ReplaceProviders(
                 DefaultValueSettingValueProvider.ProviderName,
                 ConfigurationSettingValueProvider.ProviderName,
@@ -47,6 +49,7 @@ public class IdentityGroupSettingDefinitionProvider : SettingDefinitionProvider
             ?.WithParent("Lockout", L("Settings:Identity.Lockout"), order: 3)
             ?.WithOrder(2)
             ?.WithValueType(ValueType.Number)
+            ?.Replace(x => x.IsVisibleToClients = false)
             ?.ReplaceProviders(
                 DefaultValueSettingValueProvider.ProviderName,
                 ConfigurationSettingValueProvider.ProviderName,
@@ -120,6 +123,21 @@ public class IdentityGroupSettingDefinitionProvider : SettingDefinitionProvider
                 ConfigurationSettingValueProvider.ProviderName,
                 GlobalSettingValueProvider.ProviderName,
                 TenantSettingValueProvider.ProviderName);
+        context.Add(new SettingDefinition(
+            name: Identity.Settings.IdentitySettingNames.SignIn.RequireCaptchaVerification,
+            defaultValue: "",
+            displayName: L("DisplayName:Abp.Identity.SignIn.RequireCaptchaVerification"),
+            description: L("Description:Abp.Identity.SignIn.RequireCaptchaVerification"),
+            isVisibleToClients: false)
+            .WithProviders(
+                DefaultValueSettingValueProvider.ProviderName,
+                ConfigurationSettingValueProvider.ProviderName,
+                GlobalSettingValueProvider.ProviderName,
+                TenantSettingValueProvider.ProviderName)
+            .WithGroup(GroupName, L("Settings:Identity"), GroupOrder)
+            .WithParent("SignIn", L("Settings:Identity.SignIn"), order: 2)
+            .WithOrder(4)
+            .WithValueType(ValueType.Boolean));
     }
 
     private static void SetPasswordSettingGroup(ISettingDefinitionContext context)
@@ -189,6 +207,11 @@ public class IdentityGroupSettingDefinitionProvider : SettingDefinitionProvider
             ?.WithParent("Password", L("Settings:Identity.Password"), order: 4)
             ?.WithOrder(6)
             ?.WithValueType(ValueType.Boolean)
+            ?.Replace(x =>
+            {
+                x.IsVisibleToClients = false;
+                x.DefaultValue = true.ToString();
+            })
             ?.ReplaceProviders(
                 DefaultValueSettingValueProvider.ProviderName,
                 ConfigurationSettingValueProvider.ProviderName,
@@ -199,6 +222,11 @@ public class IdentityGroupSettingDefinitionProvider : SettingDefinitionProvider
             ?.WithParent("Password", L("Settings:Identity.Password"), order: 4)
             ?.WithOrder(7)
             ?.WithValueType(ValueType.Number)
+            ?.Replace(x =>
+            {
+                x.IsVisibleToClients = false;
+                x.DefaultValue = 30.ToString();
+            })
             ?.ReplaceProviders(
                 DefaultValueSettingValueProvider.ProviderName,
                 ConfigurationSettingValueProvider.ProviderName,
@@ -209,6 +237,11 @@ public class IdentityGroupSettingDefinitionProvider : SettingDefinitionProvider
             ?.WithParent("Password", L("Settings:Identity.Password"), order: 4)
             ?.WithOrder(8)
             ?.WithValueType(ValueType.Boolean)
+            ?.Replace(x =>
+            {
+                x.IsVisibleToClients = false;
+                x.DefaultValue = true.ToString();
+            })
             ?.ReplaceProviders(
                 DefaultValueSettingValueProvider.ProviderName,
                 ConfigurationSettingValueProvider.ProviderName,
@@ -219,6 +252,7 @@ public class IdentityGroupSettingDefinitionProvider : SettingDefinitionProvider
             ?.WithParent("Password", L("Settings:Identity.Password"), order: 4)
             ?.WithOrder(9)
             ?.WithValueType(ValueType.Number)
+            ?.Replace(x => x.IsVisibleToClients = false)
             ?.ReplaceProviders(
                 DefaultValueSettingValueProvider.ProviderName,
                 ConfigurationSettingValueProvider.ProviderName,
@@ -230,9 +264,10 @@ public class IdentityGroupSettingDefinitionProvider : SettingDefinitionProvider
     {
         context.GetOrNull(IdentitySettingNames.OrganizationUnit.MaxUserMembershipCount)
             ?.WithGroup(GroupName, L("Settings:Identity"), GroupOrder)
-            ?.WithParent("OrganizationUnit", L("Settings:Identity.OrganizationUnit"), order: 6)
+            ?.WithParent("OrganizationUnit", L("Settings:Identity.OrganizationUnit"), order: 7)
             ?.WithOrder(0)
             ?.WithValueType(ValueType.Number)
+            ?.Replace(x => x.IsVisibleToClients = false)
             ?.ReplaceProviders(
                 DefaultValueSettingValueProvider.ProviderName,
                 ConfigurationSettingValueProvider.ProviderName,

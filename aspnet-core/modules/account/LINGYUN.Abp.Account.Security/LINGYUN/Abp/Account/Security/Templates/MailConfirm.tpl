@@ -3,5 +3,5 @@
 <p>{{L "EmailConfirmInfo"}}</p>
 
 <div>
-    <a href="{{model.link}}">{{L "ConfirmMyEmail"}}</a>
+    <a href="{{model.link}}"  target="_blank">{{L "ConfirmMyEmail"}}</a>
 </div>

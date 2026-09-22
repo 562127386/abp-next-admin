@@ -2,11 +2,13 @@
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Identity;
 
 namespace LINGYUN.Abp.Identity;
 
 public interface IIdentityUserAppService : IApplicationService
 {
+    Task<PagedResultDto<LINGYUN.Abp.Identity.Dto.IdentityUserDto>> GetUserListWithRoleNameAsync(GetIdentityUsersInput input);
 
     #region OrganizationUnit
 

@@ -24,6 +24,12 @@ public class IdentityUserController : AbpControllerBase, IIdentityUserAppService
         UserAppService = userAppService;
     }
 
+    [HttpGet("with-rolenames")]
+    public virtual Task<PagedResultDto<LINGYUN.Abp.Identity.Dto.IdentityUserDto>> GetUserListWithRoleNameAsync(GetIdentityUsersInput input)
+    {
+        return UserAppService.GetUserListWithRoleNameAsync(input);
+    }
+
     #region OrganizationUnit
 
     [HttpGet]

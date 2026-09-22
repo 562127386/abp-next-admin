@@ -1,9 +1,9 @@
 using LINGYUN.Abp.Account.Dto;
+using LINGYUN.Abp.Account.Web.Captcha;
 using LINGYUN.Abp.Account.Web.ExternalProviders;
 using LINGYUN.Abp.Account.Web.Models;
 using LINGYUN.Abp.Identity.QrCode;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
@@ -28,6 +28,8 @@ using Volo.Abp.Account.Web.Pages.Account;
 using Volo.Abp.Auditing;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.AspNetCore;
+using Volo.Abp.Identity.Settings;
+using Volo.Abp.MultiTenancy;
 using Volo.Abp.Reflection;
 using Volo.Abp.Security.Claims;
 using Volo.Abp.Settings;
@@ -61,8 +63,10 @@ public class LoginModel : AccountPageModel
     public QrCodeLoginInputModel QrCodeLoginInput { get; set; } = default!;
 
     public bool EnableLocalLogin { get; set; }
-
     public bool ShowCancelButton { get; set; }
+    public bool EnableCaptchaLogin { get; set; }
+    public IOptions<AbpAccountCaptchaOptions> CaptchaOptions => LazyServiceProvider.LazyGetRequiredService<IOptions<AbpAccountCaptchaOptions>>();
+
     public bool IsExternalLoginOnly => EnableLocalLogin == false && ExternalProviders?.Count() == 1;
     public string? ExternalLoginScheme => IsExternalLoginOnly ? ExternalProviders?.SingleOrDefault()?.AuthenticationScheme : null;
 
@@ -124,6 +128,7 @@ public class LoginModel : AccountPageModel
         ExternalProviders = await GetExternalProviders();
 
         EnableLocalLogin = await SettingProvider.IsTrueAsync(AccountSettingNames.EnableLocalLogin);
+        EnableCaptchaLogin = await SettingProvider.IsTrueAsync(Identity.Settings.IdentitySettingNames.SignIn.RequireCaptchaVerification);
 
         if (IsExternalLoginOnly)
         {
@@ -156,12 +161,29 @@ public class LoginModel : AccountPageModel
         ExternalProviders = await GetExternalProviders();
 
         EnableLocalLogin = await SettingProvider.IsTrueAsync(AccountSettingNames.EnableLocalLogin);
+        EnableCaptchaLogin = await SettingProvider.IsTrueAsync(Identity.Settings.IdentitySettingNames.SignIn.RequireCaptchaVerification);
 
         ModelState.RemoveModelErrors(nameof(PhoneLoginInput));
         ModelState.RemoveModelErrors(nameof(QrCodeLoginInput));
+
         if (!TryValidateModel(PasswordLoginInput, nameof(PasswordLoginInput)))
         {
             return Page();
+        }
+
+        if (EnableCaptchaLogin)
+        {
+            var isValid = await CaptchaOptions.Value.CaptchaValidator.ValidateAsync(
+                new CaptchaValidatorContext(
+                    LazyServiceProvider, 
+                    PasswordLoginInput.CaptchaCode!, 
+                    PasswordLoginInput.UserNameOrEmailAddress)
+            );
+            if (!isValid)
+            {
+                Alerts.Danger(L["InvalidVerifyCode"]);
+                return Page();
+            }
         }
 
         await ReplaceEmailToUsernameOfInputIfNeeds();
@@ -272,28 +294,6 @@ public class LoginModel : AccountPageModel
         return await RedirectSafelyAsync(ReturnUrl!, ReturnUrlHash);
     }
 
-    protected virtual void SetTenantCookies(Guid? tenantId = null)
-    {
-        if (tenantId.HasValue)
-        {
-            Response.Cookies.Append(
-               "__tenant",
-               tenantId.Value.ToString(),
-               new CookieOptions
-               {
-                   Path = "/",
-                   HttpOnly = false,
-                   IsEssential = true,
-                   Expires = DateTimeOffset.Now.AddYears(10)
-               }
-           );
-        }
-        else
-        {
-            Response.Cookies.Delete("__tenant");
-        }
-    }
-
     public async virtual Task<IActionResult> OnPostQrCodeLogin(string action)
     {
         LoginType = LoginType.QrCode;
@@ -319,7 +319,7 @@ public class LoginModel : AccountPageModel
             return Page();
         }
 
-        SetTenantCookies(qrCodeInfo.TenantId);
+        EnsureTenantCookie(qrCodeInfo.TenantId);
         using (CurrentTenant.Change(qrCodeInfo.TenantId))
         {
             var user = await UserManager.FindByIdAsync(qrCodeInfo.UserId!);
@@ -577,6 +577,20 @@ public class LoginModel : AccountPageModel
         return Task.FromResult<IActionResult>(Page());
     }
 
+    protected async virtual Task<IActionResult> HandleUserEmailConfirm(IdentityUser user)
+    {
+        await StoreConfirmUserAsync(user);
+        return RedirectToPage("UserEmailConfirm", new
+        {
+            returnUrl = ReturnUrl,
+            returnUrlHash = ReturnUrlHash,
+            rememberMe = PasswordLoginInput.RememberMe,
+            linkUserId = LinkUserId,
+            linkTenantId = LinkTenantId,
+            linkToken = LinkToken,
+        });
+    }
+
     protected async virtual Task<IActionResult> HandleUserNotAllowed()
     {
         var notAllowedUser = await GetIdentityUserAsync(PasswordLoginInput.UserNameOrEmailAddress);
@@ -594,6 +608,12 @@ public class LoginModel : AccountPageModel
                     rememberMe = PasswordLoginInput.RememberMe,
                 });
             }
+        }
+        if (notAllowedUser != null &&
+            !notAllowedUser.EmailConfirmed &&
+            await SettingProvider.IsTrueAsync(IdentitySettingNames.SignIn.RequireConfirmedEmail))
+        {
+            return await HandleUserEmailConfirm(notAllowedUser);
         }
         Alerts.Warning(L["LoginIsNotAllowed"]);
         return Page();
@@ -667,6 +687,28 @@ public class LoginModel : AccountPageModel
         }
     }
 
+    protected virtual void EnsureTenantCookie(Guid? tenantId = null)
+    {
+        if (tenantId.HasValue)
+        {
+            Response.Cookies.Append(
+               TenantResolverConsts.DefaultTenantKey,
+               tenantId.Value.ToString(),
+               new CookieOptions
+               {
+                   Path = "/",
+                   HttpOnly = false,
+                   IsEssential = true,
+                   Expires = DateTimeOffset.Now.AddYears(10)
+               }
+           );
+        }
+        else
+        {
+            Response.Cookies.Delete(TenantResolverConsts.DefaultTenantKey);
+        }
+    }
+
     #region LinkUser
 
     public async virtual Task<string> GetWithoutLinkReturnUrlAsync(string? returnUrl, string? returnUrlHash = null)
@@ -719,7 +761,6 @@ public class LoginModel : AccountPageModel
             Token = LinkToken
         });
     }
-
 
     protected async virtual Task<IActionResult> HandleLinkUserLogin(IdentityUser user)
     {
@@ -805,6 +846,8 @@ public class PasswordLoginInputModel : LoginInputModel
     [DataType(DataType.Password)]
     [DisableAuditing]
     public string Password { get; set; } = default!;
+
+    public string? CaptchaCode { get; set; }
 
     public bool RememberMe { get; set; }
 }

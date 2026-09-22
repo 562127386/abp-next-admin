@@ -3,5 +3,5 @@
 namespace LINGYUN.Abp.TextTemplating;
 public class TextTemplateDefinitionUpdateDto : TextTemplateDefinitionCreateOrUpdateDto, IHasConcurrencyStamp
 {
-    public string ConcurrencyStamp { get; set; } = default!;
+    public string? ConcurrencyStamp { get; set; } = default!;
 }
