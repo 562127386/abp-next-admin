@@ -1,4 +1,6 @@
 ﻿using LINGYUN.Abp.Account;
+using LINGYUN.Abp.Account.Web.AliyunCaptcha;
+using LINGYUN.Abp.Account.Web.LazyCaptcha;
 using LINGYUN.Abp.Account.Web.OAuth;
 using LINGYUN.Abp.Account.Web.OpenIddict;
 using LINGYUN.Abp.Account.Web.TencentCaptcha;
@@ -8,6 +10,7 @@ using LINGYUN.Abp.AspNetCore.Mvc.UI.MultiTenancy;
 using LINGYUN.Abp.AspNetCore.Mvc.Wrapper;
 using LINGYUN.Abp.AspNetCore.Session;
 using LINGYUN.Abp.AuditLogging.Elasticsearch;
+using LINGYUN.Abp.AuditLogging.IP.Location;
 using LINGYUN.Abp.BlobStoring.BlobManagement;
 using LINGYUN.Abp.Data.DbMigrator;
 using LINGYUN.Abp.Dynamic.Definitions;
@@ -16,6 +19,7 @@ using LINGYUN.Abp.EventBus.CAP;
 using LINGYUN.Abp.Exporter.MiniSoftware;
 using LINGYUN.Abp.Gdpr;
 using LINGYUN.Abp.Gdpr.Web;
+using LINGYUN.Abp.IP2Region;
 using LINGYUN.Abp.Identity.AspNetCore;
 using LINGYUN.Abp.Identity.OrganizaztionUnits;
 using LINGYUN.Abp.Localization.CultureMap;
@@ -48,9 +52,11 @@ namespace LINGYUN.Abp.MicroService.AuthServer;
     typeof(AbpAccountApplicationModule),
     typeof(AbpAccountHttpApiModule),
     // 使用 LazyCaptcha 验证码组件
-    // typeof(AbpAccountWebLazyCaptchaModule),
-    // 使用 腾讯云天御 验证码组件, 需配置好腾讯云相关参数
-    // typeof(AbpAccountWebTencentCaptchaModule),
+    typeof(AbpAccountWebLazyCaptchaModule),
+    // 使用 腾讯云验证码组件, 需配置好腾讯云相关参数
+    typeof(AbpAccountWebTencentCaptchaModule),
+    // 使用 阿里云验证码组件, 需配置好阿里云相关参数
+    typeof(AbpAccountWebAliyunCaptchaModule),
     typeof(AbpAccountWebOpenIddictModule),
     typeof(AbpAccountWebOAuthModule),
     typeof(AbpBlobStoringBlobManagementModule),
@@ -71,7 +77,9 @@ namespace LINGYUN.Abp.MicroService.AuthServer;
     typeof(AbpPermissionManagementDomainIdentityModule),
     typeof(AuthServerMigrationsEntityFrameworkCoreModule),
     typeof(AbpDataDbMigratorModule),
-    typeof(AbpAuditLoggingElasticsearchModule), // 放在 AbpIdentity 模块之后,避免被覆盖
+    typeof(AbpAuditLoggingElasticsearchModule), // 放在 AbpIdentity 模块之后,避免被覆盖,
+    typeof(AbpAuditLoggingIPLocationModule),
+    typeof(AbpIP2RegionModule),
     typeof(AbpLocalizationCultureMapModule),
     typeof(AbpAspNetCoreMultiTenancyModule),
     typeof(AbpAspNetCoreSessionModule),
